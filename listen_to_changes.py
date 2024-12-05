@@ -1,6 +1,6 @@
 import psycopg2
 import select
-from testapp.tasks import run_selenium_bot  # Import your Celery task
+from testapp.tasks import run_selenium_bot 
 
 def listen_to_changes():
     try:
@@ -9,7 +9,7 @@ def listen_to_changes():
             dbname="mysafir",
             user="postgres",
             password="postgres",
-            host="localhost",  # Change if your database is on a different host
+            host="localhost",  
             port=5432          # Default PostgreSQL port
         )
         conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
