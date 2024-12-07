@@ -2,6 +2,25 @@ import psycopg2
 import select
 from testapp.tasks import run_selenium_bot 
 
+"""
+This script listens for database changes in the `mysafir` PostgreSQL database 
+and triggers a Celery task when a change occurs.
+
+Key Functionality:
+- Subscribes to the `db_changes` channel in PostgreSQL.
+- Listens for notifications sent by a trigger on the `testapp_createorder` table.
+- When a notification is received, it extracts details (`table`, `record_id`, 
+  `operation`) and triggers the `run_selenium_bot` Celery task asynchronously.
+
+Setup:
+1. Define the trigger function in PostgreSQL
+2. Attach the trigger to the table:
+
+Usage:
+Run this script to listen for database changes:
+   $ python listen_to_changes.py
+"""
+
 def listen_to_changes():
     try:
         # Connect to PostgreSQL database
@@ -10,7 +29,7 @@ def listen_to_changes():
             user="postgres",
             password="postgres",
             host="localhost",  
-            port=5432          # Default PostgreSQL port
+            port=5432       
         )
         conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
