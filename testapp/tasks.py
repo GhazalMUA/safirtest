@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
+from .my_pass import LOGIN_USERNAME,LOGIN_PASSWORD
 
 """
 This module defines a Celery task that automates interactions with Facebook using Selenium.
@@ -78,13 +79,13 @@ def run_selenium_bot(table, record_id, operation):
         # Find and fill username
         user_name_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'email')))
         user_name_field.click()
-        user_name_field.send_keys('ghazal hafezi')  
+        user_name_field.send_keys(LOGIN_USERNAME)  
         time.sleep(2)
         
         # Find and fill password field
         pass_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pass')))
         pass_field.click()
-        pass_field.send_keys('Ghraibvand82')  
+        pass_field.send_keys(LOGIN_PASSWORD)  
         pass_field.send_keys(Keys.ENTER)
         time.sleep(2)
 
@@ -96,20 +97,28 @@ def run_selenium_bot(table, record_id, operation):
             desktop_notif.click()
         except:
             print('Notification after login did not show')
-
-        time.sleep(5)
-
+            
         # Search for the target account
         search_field = WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH, '//*[contains(concat( " ", @class, " " ), concat( " ", "x19gujb8", " " ))]')))
         # search_field = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[2]/div[3]/div/div/div[1]/div/div/label/input'))) 
         search_field.send_keys('amiroism')  
-        time.sleep(5)
         search_field.send_keys(Keys.ENTER)
         print('I searched the name')
 
-        # Wait until the 'See all' button appears and click it
-        see_all = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//a[@aria-label="See all"]')))
-        see_all.click()
+        # # Wait until the 'See all' button appears and click it
+        # see_all = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[contains(concat( " ", @class, " " ), concat( " ", "xuxw1ft", " " ))]')))
+
+        # # see_all = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//a[@aria-label="See all"]')))
+        # see_all.click()
+
+        try:
+            see_all = WebDriverWait(driver,20).until(EC.presence_of_element_located((By.XPATH,'//*[contains(concat( " ", @class, " " ), concat( " ", "x1e0frkt", " " ))]')))
+            print('I found see all') 
+            see_all.click()   
+            print('I clicked on see all button')  
+        except Exception as e:
+            print(f'i couldnt find see all button , {e}')
+        time.sleep(2)  
 
         # Click on the target account
         target_account_xpath = "//a[contains(text(), 'Amir Hatami (Amiro)')]"
@@ -125,7 +134,7 @@ def run_selenium_bot(table, record_id, operation):
         time.sleep(2)
         
         driver.execute_script("window.scrollBy(0, 700);")
-        
+        print(' I scrolled.')
         # Take a screenshot of the photos
         driver.get_screenshot_as_file(f'order_{record_id}_photos.png')
 
