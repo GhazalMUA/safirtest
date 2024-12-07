@@ -1,4 +1,5 @@
 # tasks.py
+# from .my_pass import LOGIN_PASSWORD, LOGIN_USERNAME, SEARCH_ITEM
 from celery import shared_task
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -8,8 +9,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
-from my_pass import LOGIN_PASSWORD,LOGIN_USERNAME
 
+# print(LOGIN_USERNAME)
+# print(LOGIN_PASSWORD)
 
 @shared_task
 def run_selenium_bot(table, record_id, operation):
@@ -41,13 +43,13 @@ def run_selenium_bot(table, record_id, operation):
         # Find and fill username
         user_name_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'email')))
         user_name_field.click()
-        user_name_field.send_keys(LOGIN_USERNAME)  
+        user_name_field.send_keys('ghazal hafezi')  
         time.sleep(2)
         
         # Find and fill password field
         pass_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pass')))
         pass_field.click()
-        pass_field.send_keys(LOGIN_PASSWORD)  # Replace with your password
+        pass_field.send_keys('Ghraibvand82')  
         pass_field.send_keys(Keys.ENTER)
         time.sleep(2)
 
@@ -63,10 +65,11 @@ def run_selenium_bot(table, record_id, operation):
         time.sleep(5)
 
         # Search for the target account
-        search_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[contains(concat( " ", @class, " " ), concat( " ", "x19gujb8", " " ))]')))
-        search_field.send_keys('amiroism')  # Replace with the search term
-        time.sleep(3)
+        search_field = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[2]/div[3]/div/div/div[1]/div/div/label/input'))) 
+        search_field.send_keys('amiroism')  
+        time.sleep(5)
         search_field.send_keys(Keys.ENTER)
+        print('I searched the name')
 
         # Wait until the 'See all' button appears and click it
         see_all = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//a[@aria-label="See all"]')))
@@ -77,6 +80,7 @@ def run_selenium_bot(table, record_id, operation):
         targeted_search = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, target_account_xpath)))
         driver.execute_script("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", targeted_search)
         targeted_search.click()
+        print('I found profile')
 
         # Access photos and scroll down to get more photos
         photos_list = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//a[contains(text(),"Photos")]')))
