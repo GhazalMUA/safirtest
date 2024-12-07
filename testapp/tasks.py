@@ -10,8 +10,43 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
 
-# print(LOGIN_USERNAME)
-# print(LOGIN_PASSWORD)
+"""
+This module defines a Celery task that automates interactions with Facebook using Selenium.
+
+Task: `run_selenium_bot`
+-------------------------
+- Automates the process of logging into Facebook, searching for a specific user, accessing 
+  their photos, and saving the results as screenshots and a CSV file of photo URLs.
+
+Parameters:
+-----------
+- `table` (str): Name of the database table triggering the task.
+- `record_id` (int): ID of the database record associated with the task.
+- `operation` (str): Type of database operation that triggered the task (e.g., "INSERT").
+
+Key Features:
+-------------
+1. **Facebook Automation**:
+   - Logs into Facebook with hardcoded credentials.
+   - Searches for a target user by name.
+   - Accesses and scrolls through the user's photo section.
+
+2. **Photo Capture and Storage**:
+   - Takes a screenshot of the photos page.
+   - Extracts photo URLs and saves them to a CSV file.
+
+3. **Error Handling**:
+   - Ensures the Selenium WebDriver quits in case of an error.
+   - Logs exceptions and returns the status of the task.
+
+Dependencies:
+-------------
+- `selenium`: For automating browser actions.
+- `pandas`: For saving photo URLs to a CSV file.
+- `celery`: For handling asynchronous task execution.
+
+"""
+
 
 @shared_task
 def run_selenium_bot(table, record_id, operation):
@@ -65,7 +100,8 @@ def run_selenium_bot(table, record_id, operation):
         time.sleep(5)
 
         # Search for the target account
-        search_field = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[2]/div[3]/div/div/div[1]/div/div/label/input'))) 
+        search_field = WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH, '//*[contains(concat( " ", @class, " " ), concat( " ", "x19gujb8", " " ))]')))
+        # search_field = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[2]/div[3]/div/div/div[1]/div/div/label/input'))) 
         search_field.send_keys('amiroism')  
         time.sleep(5)
         search_field.send_keys(Keys.ENTER)
